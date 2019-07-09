@@ -12,7 +12,38 @@ public class SendPackageFactory
 {
 	protected static int _seq = 0x3100; // (char)Util.Random.Next();
 	protected static byte[] body_end = {0x03};
+	public static byte[] get001d(QQUser user)
+	{
+		//Util.log("[发送包] 命令: 00 1d");
+		ByteBuilder builder = new ByteBuilder();
 
+
+		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
+		builder.writebytes(user.TXProtocol.CMainVer);
+
+		builder.writebytes(user.TXProtocol.CSubVer);
+		builder.writebytes(Util.str_to_byte("00 1d"));
+		builder.writeint(GetNextSeq());
+
+		builder.writelong(user.QQ);
+
+		builder.writebytes(user.TXProtocol.XxooA);
+		builder.writebytes(user.TXProtocol.DwClientType);
+		builder.writebytes(user.TXProtocol.DwPubNo);
+		builder.writebytes(user.TXProtocol.XxooD);
+
+
+
+		ByteBuilder body_builder = new ByteBuilder() ;
+		body_builder.writebytes(Util.str_to_byte(" 33 00 05 00 08 74 2E 71 71 2E 63 6F 6D 00 0A 71 75 6E 2E 71 71 2E 63 6F 6D 00 0C 71 7A 6F 6E 65 2E 71 71 2E 63 6F 6D 00 0C 6A 75 62 61 6F 2E 71 71 2E 63 6F 6D 00 09 6B 65 2E 71 71 2E 63 6F 6D "));
+
+		byte[] tlv_data = body_builder.getdata();
+		Crypter crypter = new Crypter();
+		byte[] result = crypter.encrypt(tlv_data,user.TXProtocol.SessionKey);
+		builder.writebytes(result);
+		builder.writebytes(body_end);
+		return builder.getdata();
+	}
 	public static byte[] get00ba(QQUser user, String code)
 	{
 		ByteBuilder builder = new ByteBuilder();

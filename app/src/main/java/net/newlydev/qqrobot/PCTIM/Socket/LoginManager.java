@@ -136,23 +136,27 @@ public class LoginManager
 			}
 			if (parsereceive.Header[0] == 0)
 			{
-				Util.log("成功获取用户信息: Nick: " + _user.NickName + " Age: " + _user.Age + " Sex: " + _user.Gender);
 				_user.islogined = true;
 				_user.logintime = new Date().getTime();
 				data = SendPackageFactory.get0828(_user);
 				socket.sendMessage(data);
-
-				result = socket.receiveMessage();
+				result = socket.receiveMessage(); 
 				parsereceive = new ParseRecivePackage(result, _user.TXProtocol.BufTgtGtKey, _user);
 				parsereceive.decrypt_body();
 				parsereceive.parse_tlv();
-
 				data = SendPackageFactory.get00ec(_user, QQGlobal.Online);
 				socket.sendMessage(data);
-
 				result = socket.receiveMessage();
 				parsereceive = new ParseRecivePackage(result, _user.TXProtocol.SessionKey, _user);
 				parsereceive.decrypt_body();
+				data = SendPackageFactory.get001d(_user);
+				socket.sendMessage(data);
+				result = socket.receiveMessage();
+				parsereceive = new ParseRecivePackage(result, _user.TXProtocol.SessionKey, _user);
+				parsereceive.parse001d();
+				Thread.sleep(500);
+				Util.getquncookie(_user);
+				Util.log("成功获取用户信息: Nick: " + _user.NickName + " Age: " + _user.Age + " Sex: " + _user.Gender+" bkn:"+_user.bkn+" Cookie:"+_user.quncookie);
 				return true;
 			}
 			else

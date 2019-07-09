@@ -1,6 +1,5 @@
 package net.newlydev.qqrobot.PCTIM.Utils;
 import android.graphics.*;
-import android.util.*;
 import java.io.*;
 import java.net.*;
 import java.nio.*;
@@ -8,14 +7,173 @@ import java.security.*;
 import java.text.*;
 import java.util.*;
 import java.util.zip.*;
+import javax.net.ssl.*;
 import net.newlydev.qqrobot.PCTIM.*;
 import net.newlydev.qqrobot.PCTIM.Message.*;
+import net.newlydev.qqrobot.PCTIM.Utils.*;
 import net.newlydev.qqrobot.PCTIM.sdk.*;
 
 public class Util
 {
 	private static Date BaseDateTime = new Date(0);
+	public static HostnameVerifier hv = new HostnameVerifier() {
+        public boolean verify(String urlHostName, SSLSession session)
+		{
+            return true;
+        }
+    };
+	public static String ua = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36";
+	
+	public static void getquncookie(QQUser user)
+	{
 
+		try
+		{
+			Util.trustAllHttpsCertificates();
+			String urls="https://ssl.ptlogin2.qq.com/jump?pt_clientver=5509&pt_src=1&keyindex=9&clientuin=" + user.QQ + "&clientkey=" + Util.byte2HexString(user.TXProtocol.BufServiceTicketHttp).replaceAll(" ", "") + "&u1=http%3A%2F%2Fqun.qq.com%2Fmember.html%23gid%3D168209441";
+			URL lll = new URL(urls);
+			HttpURLConnection connection = (HttpURLConnection) lll.openConnection();// 打开连接  
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", ua);
+			//connection.connect();// 连接会话  
+
+			// 获取输入流  
+			BufferedReader br= new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));  
+			String line;  
+			StringBuilder sb = new StringBuilder();  
+			while ((line = br.readLine()) != null)
+			{// 循环读取流  
+				sb.append(line);  
+			}  
+			br.close();// 关闭流
+			List<String> cookies = connection.getHeaderFields().get("Set-Cookie");
+			user.userskey = "";
+			for (String cookie : cookies)
+			{
+				if (cookie.matches("skey=.*"))
+				{
+					user.userskey = cookie.replaceAll("skey=", "").replaceAll(";.*", "");
+					user.bkn = Util.GetBkn(user.userskey);
+				}
+				if (cookie.matches("p_skey=.*"))
+				{
+					user.pskey = cookie.replaceAll("p_skey=", "").replaceAll(";.*", "");
+					user.qungtk = Util.GET_GTK(user.pskey);
+				}
+				user.quncookie += cookie.replaceAll("Path=.*$", "").replaceAll("Expires=.*$", "") + " " ;
+			}
+			String url = connection.getHeaderField("Location");
+			fuck(url, user);
+			connection.disconnect();// 断开连接  
+
+
+
+		}
+		catch (Exception e)
+		{  
+			e.printStackTrace();
+		}
+
+
+	}
+
+	public static void fuck(String url, QQUser user)
+	{
+
+		try
+		{  
+		    URL lll = new URL(url);
+			HttpURLConnection connection = (HttpURLConnection) lll.openConnection();// 打开连接  
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", ua);
+			connection.setInstanceFollowRedirects(false);
+			connection.connect();// 连接会话  
+			// 获取输入流  
+			BufferedReader br= new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));  
+			String line;  
+			StringBuilder sb = new StringBuilder();  
+			while ((line = br.readLine()) != null)
+			{// 循环读取流  
+				sb.append(line);  
+			}  
+			br.close();// 关闭流
+			List<String> cookies = connection.getHeaderFields().get("Set-Cookie");
+
+			for (String cookie : cookies)
+			{
+				if (cookie.matches("skey=.*"))
+				{
+					user.userskey = cookie.replaceAll("skey=", "").replaceAll(";.*", "");
+					user.bkn = Util.GetBkn(user.userskey);
+				}
+				if (cookie.matches("p_skey=.*"))
+				{
+					user.pskey = cookie.replaceAll("p_skey=", "").replaceAll(";.*", "");
+					user.qungtk = Util.GET_GTK(user.pskey);
+				}
+				user.quncookie += cookie.replaceAll("Path=.*$", "").replaceAll("Expires=.*$", "") + " " ;
+			}
+			connection.disconnect();// 断开连接  
+
+
+
+		}
+		catch (Exception e)
+		{  
+			e.printStackTrace();
+		}
+
+
+	}
+
+
+	public static void getcookie(QQUser user)
+	{
+
+		try
+		{  
+
+			Util.trustAllHttpsCertificates();
+			HttpsURLConnection.setDefaultHostnameVerifier(Util.hv);
+
+			URL lll = new URL("https://ssl.ptlogin2.qq.com/jump?pt_clientver=5593&pt_src=1&keyindex=9&ptlang=2052&clientuin=" + user.QQ + "&clientkey=" + Util.byte2HexString(user.TXProtocol.BufServiceTicketHttp).replaceAll(" ", "") + "&u1=https:%2F%2Fuser.qzone.qq.com%2F417085811%3FADUIN=417085811%26ADSESSION=" + (new Date().getTime() + 28800000) + "%26ADTAG=CLIENT.QQ.5593_MyTip.0%26ADPUBNO=26841&source=namecardhoverstar");
+			HttpURLConnection connection = (HttpURLConnection) lll.openConnection();// 打开连接  
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", ua);
+			connection.connect();// 连接会话  
+			// 获取输入流  
+			BufferedReader br= new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));  
+			String line;  
+			StringBuilder sb = new StringBuilder();  
+			while ((line = br.readLine()) != null)
+			{// 循环读取流  
+				sb.append(line);  
+			}  
+			br.close();// 关闭流
+			String cookie = connection.getHeaderField("Set-Cookie");
+			System.out.println(cookie);
+			connection.disconnect();// 断开连接  
+
+
+		}
+		catch (Exception e)
+		{  
+			e.printStackTrace();
+		}
+	}
+
+	private static void trustAllHttpsCertificates() throws Exception
+	{
+		javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
+		javax.net.ssl.TrustManager tm = new miTM();
+		trustAllCerts[0] = tm;
+		javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext
+			.getInstance("SSL");
+		sc.init(null, trustAllCerts, null);
+		javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc
+																	.getSocketFactory());
+		// TODO: Implement this method
+	}
 	public static String getMD5(byte[] bytes)
 	{
 		// TODO: Implement this method
@@ -193,7 +351,40 @@ public class Util
 		}
 		return null;
 	}
+	public static class miTM implements javax.net.ssl.TrustManager,
+	javax.net.ssl.X509TrustManager
+	{
+		public java.security.cert.X509Certificate[] getAcceptedIssuers()
+		{
+			return null;
+		}
 
+		public static boolean isServerTrusted(
+			java.security.cert.X509Certificate[] certs)
+		{
+			return true;
+		}
+
+		public static boolean isClientTrusted(
+			java.security.cert.X509Certificate[] certs)
+		{
+			return true;
+		}
+
+		public void checkServerTrusted(
+			java.security.cert.X509Certificate[] certs, String authType)
+		throws java.security.cert.CertificateException
+		{
+			return;
+		}
+
+		public void checkClientTrusted(
+			java.security.cert.X509Certificate[] certs, String authType)
+		throws java.security.cert.CertificateException
+		{
+			return;
+		}
+	}
 
 	public static PictureStore uploadimg(PictureKeyStore keystore, QQUser user, int pictureid)
 	{
@@ -807,14 +998,15 @@ public class Util
 	}
 	public static String GetBkn(String skey)
 	{
-		int num = 5381;
-		for (int i = 0; i <= skey.length() - 1; i++)
-		{
-			num += (num << 5) + Integer.parseInt(skey.substring(i, i + 1));
+		int hash = 5381;
 
-		}
+		for (int i = 0, len = skey.length(); i < len; ++i)
 
-		return String.valueOf((num & 0x7FFFFFFF));
+			hash += (hash << 5) + skey.charAt(i);
+
+		int gtkOrbkn = hash & 2147483647;
+
+		return String.valueOf(gtkOrbkn);
 	}
 
 	public static String ToHex(byte[] data, String p1, String p2)

@@ -130,7 +130,6 @@ public class ParseTlvFactory
 				bytefactory.readBytesbylength();
 				user.TXProtocol.BufTgtGtKey = bytefactory.readBytes(16);
 
-
 				user.TXProtocol.BufTgt = bytefactory.readBytesbylength();
 
 				user.TXProtocol.Buf16BytesGtKeySt = bytefactory.readBytes(16);
@@ -138,13 +137,12 @@ public class ParseTlvFactory
 				user.TXProtocol.BufServiceTicket = bytefactory.readBytesbylength();
 
 				byte[] http = bytefactory.readBytesbylength();
-				ByteFactory httpfactory = new ByteFactory(tlv.Value);
-
+				ByteFactory httpfactory = new ByteFactory(http);
+				httpfactory.readBytes(1);
 				user.TXProtocol.Buf16BytesGtKeyStHttp = httpfactory.readBytes(16);
-
 				user.TXProtocol.BufServiceTicketHttp = httpfactory.readBytesbylength();
-				user.TXProtocol.BufGtKeyTgtPwd = httpfactory.readBytes(16);
-
+				//user.TXProtocol.BufGtKeyTgtPwd = httpfactory.readBytes(16);
+				//Util.log(Util.byte2HexString(user.TXProtocol.BufServiceTicketHttp));
 			}
 			else
 			{

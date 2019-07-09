@@ -18,7 +18,17 @@ public class QQUser
 	public byte[] QQPacket00BaVerifyCode=new byte[0];
 
 	public byte Next;
+	
+	public String userskey;
 
+	public String bkn;
+	
+	public String quncookie;
+	
+	public String pskey;
+
+	public String qungtk;
+	
 	public byte[] QQPacket00BaKey = Util.RandomKey();
 
 	public byte QQPacket00BaSequence=0x01;

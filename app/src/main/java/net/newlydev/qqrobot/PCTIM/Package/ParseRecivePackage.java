@@ -46,7 +46,14 @@ public class ParseRecivePackage
 		this.body_encrypted = bytefactory.readBytes(bytefactory.data.length - bytefactory.position - 1);
 
 	}
-
+	public void parse001d()
+	{
+		this.decrypt_body();
+		ByteFactory factory = new ByteFactory(this.body_decrypted);
+		factory.readBytes(4);
+		this._user.userskey = new String(factory.readBytes(10));
+	}
+	
 	public void parse00ba()
 	{
 		this.decrypt_body();
