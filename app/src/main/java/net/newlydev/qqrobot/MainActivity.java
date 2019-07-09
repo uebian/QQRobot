@@ -14,11 +14,41 @@ import android.view.*;
 
 public class MainActivity extends Activity
 {
+	private ServiceConnection conn;
+	private IBinder ibinder;
+	private Messenger handler;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// TODO: Implement this method
 		super.onCreate(savedInstanceState);
+		Intent i=new Intent(MainActivity.this,MainService.class);
+		handler=new Messenger(new Handler(){});
+		conn=new ServiceConnection(){
+			@Override
+			public void onServiceConnected(ComponentName p1, IBinder p2)
+			{
+				ibinder=p2;
+				Message msg=new Message();
+				msg.replyTo=handler;
+				Bundle data=new Bundle();
+				data.putString("type","islogined");
+				msg.setData(data);
+				try
+				{
+					new Messenger(ibinder).send(msg);
+				}
+				catch (RemoteException e)
+				{}
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName p1)
+			{
+				// TODO: Implement this method
+			}
+		};
+		bindService(i,conn,BIND_AUTO_CREATE);
 		ListView lv=new ListView(this);
 		setContentView(lv);
 		final ArrayList<String> pluginlist=new ArrayList<String>();
@@ -94,5 +124,39 @@ public class MainActivity extends Activity
 				}
 			});
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		// TODO: Implement this method
+		menu.add("Update Plugin").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
+				@Override
+				public boolean onMenuItemClick(MenuItem p1)
+				{
+					Message msg=new Message();
+					Bundle data=new Bundle();
+					data.putString("type","updateRobot");
+					msg.setData(data);
+					try
+					{
+						new Messenger(ibinder).send(msg);
+					}
+					catch (RemoteException e)
+					{}
+					// TODO: Implement this method
+					return false;
+				}
+			});
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		// TODO: Implement this method
+		super.onDestroy();
+		unbindService(conn);
+	}
+	
 
 }

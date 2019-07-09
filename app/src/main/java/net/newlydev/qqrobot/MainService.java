@@ -10,7 +10,6 @@ public class MainService extends Service
 {
 	LoginManager manager ;
 	HeartBeat heartbeat;
-	QQRobot robot;
 	MessageService messageservice;
 	QQUser user;
 	Object lock=new Object();
@@ -35,7 +34,7 @@ public class MainService extends Service
 										Message msg=new Message();
 										Bundle data=new Bundle();
 										heartbeat=new HeartBeat(user,manager.socket);
-										robot=new QQRobot(manager.socket,user,getApplicationContext());
+										QQRobot robot=new QQRobot(manager.socket,user,getApplicationContext());
 										messageservice=new MessageService(user,manager.socket,robot);
 										heartbeat.start();
 										messageservice.start();
@@ -86,6 +85,10 @@ public class MainService extends Service
 						synchronized(manager){
 							manager.notify();
 						}
+						break;
+					case "updateRobot":
+						QQRobot robot=new QQRobot(manager.socket,user,getApplicationContext());
+						messageservice.updateRobot(robot);
 						break;
 				}
 			}
