@@ -152,24 +152,18 @@ public class ParseRecivePackage
 		QQMessage qqmessage = new QQMessage();
 		try
 		{
-
 			this.decrypt_body();
 			ByteFactory bytefactory = new ByteFactory(this.body_decrypted);
 			this.Message_To_Respone = Util.subByte(this.body_decrypted, 0, 16);
 			long Target_uin = bytefactory.readlong();
 			qqmessage.Self_uin = bytefactory.readlong();
 			bytefactory.readBytes(10);
-
 			int type = bytefactory.readint();
 			bytefactory.readBytes(2);
 			bytefactory.readBytesbylength();
-
 			qqmessage.Group_uin = bytefactory.readlong();
-
 			byte[] flag = bytefactory.readBytes(1);
-
 			ByteFactory message_datafactory = new ByteFactory(bytefactory.readrestBytes());
-
 			switch (type)
 			{
 				case 0x52 : // 群消息、被拉进/踢出群
@@ -201,13 +195,12 @@ public class ParseRecivePackage
 				case 0x22:
 					{
 						message_datafactory.readBytes(5);
-						qqmessage.Sender_Uin = message_datafactory.readlong(); // 邀请人/踢人QQ
+						qqmessage.Sender_Uin = message_datafactory.readlong();
+						Util.log("用户"+qqmessage.Sender_Uin+"变更："+Util.byte2HexString(this._body));
 						break;
 					}
 				case 0x2C:
 					{
-
-
 						break;
 					}
 				default:
@@ -245,7 +238,6 @@ public class ParseRecivePackage
 					_ukey = factory.readBytes(128);
 					break;
 				}
-
 			}
 			keystore.uploaded = false;
 		}
@@ -254,9 +246,7 @@ public class ParseRecivePackage
 			keystore.uploaded = true;
 		}
 		keystore.ukey = _ukey;
-
 		return keystore;
-
 	} 
 
 	public QQMessage parse00ce()
@@ -264,7 +254,6 @@ public class ParseRecivePackage
 		QQMessage qqmessage = new QQMessage();
 		try
 		{
-
 			this.decrypt_body();
 			ByteFactory bytefactory = new ByteFactory(this.body_decrypted);
 			this.Message_To_Respone = Util.subByte(this.body_decrypted, 0, 16);
@@ -293,9 +282,6 @@ public class ParseRecivePackage
             bytefactory.readBytes(1);
             bytefactory.readBytes(1);
             Util.parseRichText(qqmessage, bytefactory.readrestBytes());
-
-
-
 			return qqmessage;
 		}
 		catch (Exception e)

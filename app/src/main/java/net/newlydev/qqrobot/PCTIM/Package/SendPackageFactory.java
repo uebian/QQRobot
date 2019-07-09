@@ -522,7 +522,7 @@ public class SendPackageFactory
 		long dateTime = Util.GetTimeSeconds(new Date());
 		long group = Util.ConvertQQGroupId(message.Group_uin);
 		//byte[] guid = ("{"+Util.GetMD5ToGuidHashFromFile(message.Message) + "}."+message.Message.split("[.]")[message.Message.split("[.]").length-1]).getBytes();
-		byte[] guid = ("{"+Util.GetMD5ToGuidHashFromByted(message.imagedata) + "}.jpg").getBytes();
+		byte[] guid = ("{"+Util.GetMD5ToGuidHashFromBytes(message.imagedata) + "}.jpg").getBytes();
 		body_builder.writebyte ((byte)0x2A);
 		body_builder.writelong(group);
 		body_builder.writebytes (Util.str_to_byte("01 00 00 02 01 00 00 00 00 00 00 00 4D 53 47 00 00 00 00 00"));

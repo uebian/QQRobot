@@ -61,7 +61,6 @@ public class MessageManager
 			{
 				user.offline = true;
 				user.islogined = false;
-
 			}
 		}
 		else if (Util.GetInt(parsereceive.Command) == 904)
@@ -77,7 +76,6 @@ public class MessageManager
 						MessageFactory factory = new MessageFactory();
 						factory.message_type = 2;
 						factory.imagedata=new_store.data;
-						//factory.Message = new_store.File;
 						factory.Group_uin = new_store.Group;
 						try
 						{
@@ -88,7 +86,6 @@ public class MessageManager
 						{
 							e.printStackTrace();
 						}
-						
 					}
 				}.start();
 			}
@@ -98,14 +95,10 @@ public class MessageManager
 
 				for (PictureStore onestore: user.imgs)
 				{
-
-
 					if (onestore.pictureid == Util.GetInt(parsereceive.Sequence))
 					{
-
 						store = onestore;
 						user.imgs.remove(onestore);
-
 						break;
 					}
 
@@ -122,8 +115,6 @@ public class MessageManager
 				}
 				catch (IOException e)
 				{}
-				
-
 			}
 
 		}

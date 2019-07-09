@@ -58,7 +58,6 @@ public class QQRobot
 				public void run()
 				{
 					plugin.onMessageHandler(qqmessage);
-
 				}
 			}.start();
 		}

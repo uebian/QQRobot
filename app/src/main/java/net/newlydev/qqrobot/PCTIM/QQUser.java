@@ -23,7 +23,7 @@ public class QQUser
 
 	public String bkn;
 	
-	public String quncookie;
+	public String quncookie="";
 	
 	public String pskey;
 
