@@ -9,7 +9,7 @@ import net.newlydev.qqrobot.PCTIM.Utils.*;
 
 public class LoginManager
 {
-	String verifyCode;
+	String verifyCode="";
 	private byte[] data = null;
 	public Udpsocket socket = null;
 	private QQUser _user;
@@ -26,6 +26,9 @@ public class LoginManager
 	public void setVerifyCode(String verifyCode)
 	{
 		this.verifyCode = verifyCode;
+		synchronized(this){
+			this.notify();
+		}
 	}
 
 	public void relogin()
@@ -86,32 +89,32 @@ public class LoginManager
 				Util.log("需要验证码");
 				while (parsereceive.Status == 0x1)
 				{
-					for (int i=0;i < 10;i++)
+					while (verifyCode.equals(""))
 					{
 						data = SendPackageFactory.get00ba(_user, "");
 						socket.sendMessage(data);
 						result = socket.receiveMessage();
 						parsereceive = new ParseRecivePackage(result, _user.QQPacket00BaKey, _user);
 						parsereceive.parse00ba();
-					}
-					try
-					{
-						//InputStream verifyCodeStream = new ByteArrayInputStream(_user.QQPacket00BaVerifyCode);
-						BitmapFactory.decodeByteArray(_user.QQPacket00BaVerifyCode, 0, _user.QQPacket00BaVerifyCode.length).compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream("/sdcard/yzm.png"));
-						Message msg=new Message();
-						Bundle mdata=new Bundle();
-						msg.setData(mdata);
-						mdata.putString("type", "verifyCode");
-						mdata.putByteArray("image", _user.QQPacket00BaVerifyCode);
-						messenger.send(msg);
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-					synchronized (this)
-					{
-						wait();
+						try
+						{
+							//InputStream verifyCodeStream = new ByteArrayInputStream(_user.QQPacket00BaVerifyCode);
+							BitmapFactory.decodeByteArray(_user.QQPacket00BaVerifyCode, 0, _user.QQPacket00BaVerifyCode.length).compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream("/sdcard/yzm.png"));
+							Message msg=new Message();
+							Bundle mdata=new Bundle();
+							msg.setData(mdata);
+							mdata.putString("type", "verifyCode");
+							mdata.putByteArray("image", _user.QQPacket00BaVerifyCode);
+							messenger.send(msg);
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+						synchronized (this)
+						{
+							wait();
+						}
 					}
 					data = SendPackageFactory.get00ba(_user, verifyCode);
 					socket.sendMessage(data);

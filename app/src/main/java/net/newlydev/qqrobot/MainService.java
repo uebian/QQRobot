@@ -82,9 +82,6 @@ public class MainService extends Service
 						break;
 					case "verifyCode":
 						manager.setVerifyCode(msg.getData().getString("code"));
-						synchronized(manager){
-							manager.notify();
-						}
 						break;
 					case "updateRobot":
 						QQRobot robot=new QQRobot(manager.socket,user,getApplicationContext());

@@ -212,13 +212,9 @@ public class Util
 			}
 		}
 	}
-	public static String getMD5(Bitmap bitmap) throws IOException
+	public static String getMD5(Bitmap bitmap)
 	{
-		ByteArrayOutputStream baos=new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-		byte[] data=baos.toByteArray();
-		baos.close();
-		return getMD5(data);
+		return getMD5(Bufferedimg_tobytes(bitmap));
 	}
 	public static String GetMD5HashFromFile(String fileName)
 	{
@@ -282,20 +278,14 @@ public class Util
 	public static PictureStore uploadimg(PictureKeyStore keystore, QQUser user, int pictureid)
 	{
 		PictureStore store = null;
-
 		for (PictureStore onestore: user.imgs)
 		{
-
-
 			if (onestore.pictureid == pictureid)
 			{
-
 				store = onestore;
 				user.imgs.remove(onestore);
-
 				break;
 			}
-
 		}
 	    URL u = null;
         HttpURLConnection con = null;
@@ -320,6 +310,9 @@ public class Util
 			in.close();
             outStream.flush();
             outStream.close();
+			con.getResponseCode();
+			DataInputStream dis=new DataInputStream(con.getInputStream());
+			dis.readLine();
         }
 		catch (Exception e)
 		{

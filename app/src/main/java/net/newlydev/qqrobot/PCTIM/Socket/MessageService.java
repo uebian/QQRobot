@@ -88,13 +88,9 @@ public class MessageService
 					public void run()
 					{
 						PictureStore  new_store = Util.uploadimg(keystore, user, Util.GetInt(parsereceive.Sequence));
-						MessageFactory factory = new MessageFactory();
-						factory.message_type = 2;
-						factory.imagedata = new_store.data;
-						factory.Group_uin = new_store.Group;
 						try
 						{
-							byte[] data_to_send = SendPackageFactory.sendpic(user, factory);
+							byte[] data_to_send = SendPackageFactory.sendpic(user,new_store.Group,new_store.data);
 							socket.sendMessage(data_to_send);
 						}
 						catch (IOException e)
@@ -118,14 +114,9 @@ public class MessageService
 					}
 
 				}
-				MessageFactory factory = new MessageFactory();
-				factory.message_type = 2;
-				factory.imagedata = store.data;
-				factory.image = BitmapFactory.decodeByteArray(store.data, 0, store.data.length);
-				factory.Group_uin = store.Group;
 				try
 				{
-					byte[] data_to_send = SendPackageFactory.sendpic(this.user, factory);
+					byte[] data_to_send = SendPackageFactory.sendpic(this.user, store.Group,store.data);
 					this.socket.sendMessage(data_to_send);
 				}
 				catch (IOException e)
