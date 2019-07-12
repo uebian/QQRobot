@@ -11,10 +11,9 @@ import net.newlydev.qqrobot.PCTIM.sdk.*;
 
 public class MessageService
 {
-	private Thread thread = null;
-	private QQUser user = null;
-	private Udpsocket socket = null;
-	private long timemills = 0;
+	private Thread thread;
+	private QQUser user;
+	private Udpsocket socket;
 	private QQRobot robot;
 
 	public MessageService(QQUser _user, Udpsocket _socket, QQRobot _robot)
@@ -43,7 +42,7 @@ public class MessageService
 
 		final ParseRecivePackage parsereceive = new ParseRecivePackage(data, user.TXProtocol.SessionKey, user);
 		//Util.log("[接收包] 命令: "+Util.byte2HexString(parsereceive.Command));
-		if (Util.GetInt(parsereceive.Command) == 23)
+		if (Util.GetInt(parsereceive.Command) == 23)//0017
 		{
 			QQMessage qqmessage = parsereceive.parse0017();
 			if (qqmessage != null)
@@ -69,7 +68,7 @@ public class MessageService
 				}
 			}
 		}
-		else if (Util.GetInt(parsereceive.Command) == 88)
+		else if (Util.GetInt(parsereceive.Command) == 88)//0058
 		{
 			parsereceive.decrypt_body();
 			if (parsereceive.body_decrypted[0] != 0)
@@ -77,54 +76,7 @@ public class MessageService
 				user.offline = true;
 				user.islogined = false;
 			}
-		}
-		else if (Util.GetInt(parsereceive.Command) == 904)
-		{
-			PictureStore store = null;
-			final PictureKeyStore keystore = parsereceive.parse0388();
-			if (keystore.uploaded == false)
-			{
-				new Thread(){
-					public void run()
-					{
-						PictureStore  new_store = Util.uploadimg(keystore, user, Util.GetInt(parsereceive.Sequence));
-						try
-						{
-							byte[] data_to_send = SendPackageFactory.sendpic(user,new_store.Group,new_store.data);
-							socket.sendMessage(data_to_send);
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-						}
-					}
-				}.start();
-			}
-			else
-			{
-
-
-				for (PictureStore onestore: user.imgs)
-				{
-					if (onestore.pictureid == Util.GetInt(parsereceive.Sequence))
-					{
-						store = onestore;
-						user.imgs.remove(onestore);
-						break;
-					}
-
-				}
-				try
-				{
-					byte[] data_to_send = SendPackageFactory.sendpic(this.user, store.Group,store.data);
-					this.socket.sendMessage(data_to_send);
-				}
-				catch (IOException e)
-				{}
-			}
-
-		}
-		else if (Util.GetInt(parsereceive.Command) == 206)
+		}else if (Util.GetInt(parsereceive.Command) == 206)//00ce
 		{
 			QQMessage qqmessage = parsereceive.parse00ce();
 			byte[] data_to_send = SendPackageFactory.get00ce(this.user, parsereceive.Message_To_Respone, parsereceive.Sequence);
@@ -148,10 +100,48 @@ public class MessageService
 					}
 				}
 			}
-		}else if(Util.GetInt(parsereceive.Command)==Util.GetInt(new byte[]{0x00,0x02}))
+		}
+		else if (Util.GetInt(parsereceive.Command) == 904)//0388
 		{
-			parsereceive.decrypt_body();
-			Util.log(Util.byte2HexString(parsereceive.body_decrypted));
+			PictureStore store = null;
+			final PictureKeyStore keystore = parsereceive.parse0388();
+			if (keystore.uploaded == false)
+			{
+				new Thread(){
+					public void run()
+					{
+						PictureStore  new_store = Util.uploadimg(keystore, user, Util.GetInt(parsereceive.Sequence));
+						try
+						{
+							byte[] data_to_send = SendPackageFactory.sendpic(user,new_store.Group,new_store.data);
+							socket.sendMessage(data_to_send);
+						}
+						catch (IOException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}.start();
+			}
+			else
+			{
+				for (PictureStore onestore: user.imgs)
+				{
+					if (onestore.pictureid == Util.GetInt(parsereceive.Sequence))
+					{
+						store = onestore;
+						user.imgs.remove(onestore);
+						break;
+					}
+				}
+				try
+				{
+					byte[] data_to_send = SendPackageFactory.sendpic(this.user, store.Group,store.data);
+					this.socket.sendMessage(data_to_send);
+				}
+				catch (IOException e)
+				{}
+			}
 		}
 	}
 	public void updateRobot(QQRobot robot)
