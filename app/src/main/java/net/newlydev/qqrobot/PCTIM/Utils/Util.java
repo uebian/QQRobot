@@ -492,6 +492,8 @@ public class Util
 					{
 						qqmessage.contain_type = 2;
 						qqmessage.Message += bytefactory.readStringbylength();
+						log(Util.byte2HexString(rich_data));
+						log(new String(rich_data));
 						break;
 					}
 				case 0x0A: // 音频

@@ -21,7 +21,6 @@ public class ParseRecivePackage
 	public byte[] body_encrypted = null;
 	public byte[] body_decrypted = null;
 	public byte[] tea_key=null;
-	private Collection<TLV> tlvs = null;
 	private byte[] _body = null;
 	private QQUser _user = null;
 	public byte[] Message_To_Respone = null;
@@ -94,14 +93,7 @@ public class ParseRecivePackage
 		}
 		else if (VerifyType == 0x14)
 		{
-
-
-
-
 		}
-
-
-
 	}
 
 	public void decrypt_body()
@@ -109,44 +101,37 @@ public class ParseRecivePackage
 		Crypter crypter = new Crypter();
 		this.body_decrypted = crypter.decrypt(this.body_encrypted, this.tea_key);
 		this.Header = Util.subByte(this.body_decrypted, 0, 1);
-
 	}
 
 	public void parse_tlv()
 	{
-		tlvs = TLV.ParseTlv(Util.subByte(this.body_decrypted, 1, this.body_decrypted.length - 1));
+		Collection<TLV> tlvs = TLV.ParseTlv(Util.subByte(this.body_decrypted, 1, this.body_decrypted.length - 1));
 		for (TLV tlv: tlvs)
 		{
 			ParseTlvFactory.parsetvl(tlv, _user);
 		}
-
 	}
 
 	public void parse0836()
 	{
 		this.decrypt_body();
-
 		int result = this.Header[0];
 		if (result == -5 || result == 0 || result == 1 || result == 51 ||
 			result == 52 || result == 63 || result == 248 ||
 			result == 249 || result == 250 || result == 251 ||
 			result == 254 || result == 15 || result == 255)
 		{
-
 			this.parse_tlv();
 		}
 		else
 		{
-
 			Crypter crypter = new Crypter();
 			this.body_decrypted = crypter.decrypt(this.body_decrypted, _user.TXProtocol.BufTgtgtKey);
 			this.Header = Util.subByte(this.body_decrypted, 0, 1);
 			this.parse_tlv();
 		}
-
-
-
 	}
+	
 	public QQMessage parse0017()
 	{
 		QQMessage qqmessage = new QQMessage();
@@ -171,23 +156,17 @@ public class ParseRecivePackage
 						if (flag[0] == 0x01)
 						{
 							qqmessage.Message_Type = 0;//群消息
-
-							qqmessage.Sender_Uin = message_datafactory.readlong();
-							//发消息人的QQ
-
+							qqmessage.Sender_Uin = message_datafactory.readlong();//发消息人的QQ
 							qqmessage.MessageIndex = message_datafactory.readBytes(4); //姑且叫消息索引吧
 							qqmessage.Reciece_Message_Time = message_datafactory.readlong(); //接收时间  
 							message_datafactory.readBytes(24);
 							qqmessage.Send_Message_Time = message_datafactory.readlong() * 1000; //发送时间 
 							qqmessage.Message_Id = message_datafactory.readlong(); //id
 							message_datafactory.readBytes(8);
-
 							qqmessage.Message_Font = message_datafactory.readStringbylength();//字体
-
 							message_datafactory.readBytes(2);
 							byte[] rich_data = message_datafactory.readrestBytes();
 							Util.parseRichText(qqmessage, rich_data);
-
 						}
 						break;
 					}

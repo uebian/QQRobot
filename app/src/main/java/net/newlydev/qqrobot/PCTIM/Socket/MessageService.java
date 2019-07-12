@@ -148,6 +148,10 @@ public class MessageService
 					}
 				}
 			}
+		}else if(Util.GetInt(parsereceive.Command)==Util.GetInt(new byte[]{0x00,0x02}))
+		{
+			parsereceive.decrypt_body();
+			Util.log(Util.byte2HexString(parsereceive.body_decrypted));
 		}
 	}
 	public void updateRobot(QQRobot robot)

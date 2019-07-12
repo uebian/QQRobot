@@ -99,7 +99,7 @@ public class LoginManager
 						try
 						{
 							//InputStream verifyCodeStream = new ByteArrayInputStream(_user.QQPacket00BaVerifyCode);
-							BitmapFactory.decodeByteArray(_user.QQPacket00BaVerifyCode, 0, _user.QQPacket00BaVerifyCode.length).compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream("/sdcard/yzm.png"));
+							//BitmapFactory.decodeByteArray(_user.QQPacket00BaVerifyCode, 0, _user.QQPacket00BaVerifyCode.length).compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream("/sdcard/yzm.png"));
 							Message msg=new Message();
 							Bundle mdata=new Bundle();
 							msg.setData(mdata);

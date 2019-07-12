@@ -44,27 +44,20 @@ public class SendPackageFactory
 		builder.writebytes(body_end);
 		return builder.getdata();
 	}
-	public static byte[] get00ba(QQUser user, String code)
+	public static byte[] get00ba(QQUser user, String code)//
 	{
 		ByteBuilder builder = new ByteBuilder();
-
-
 		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
 		builder.writebytes(user.TXProtocol.CMainVer);
-
 		builder.writebytes(user.TXProtocol.CSubVer);
 		builder.writebytes(Util.str_to_byte("00 ba"));
 		builder.writeint(GetNextSeq());
-
 		builder.writelong(user.QQ);
-
 		builder.writebytes(user.TXProtocol.XxooA);
 		builder.writebytes(user.TXProtocol.DwClientType);
 		builder.writebytes(user.TXProtocol.DwPubNo);
 		builder.writebytes(user.TXProtocol.XxooD);
 		builder.writebytes(user.QQPacket00BaKey);
-
-
 		ByteBuilder body_builder = new ByteBuilder() ;
 		body_builder.writebytes(Util.str_to_byte("00 02 00 00 08 04 01 E0"));
 		body_builder.writebytes(user.TXProtocol.DwSsoVersion);
@@ -93,14 +86,12 @@ public class SendPackageFactory
 			body_builder.writebytes(new byte[] {0x14, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00});
 			body_builder.writeint(verifyCodeBytes.length);///?????
 		    body_builder.writebytes(verifyCodeBytes);
-			body_builder.writebytesbylength(user.TXProtocol.BufSigPic);
-			//输入验证码后清空图片流
+			body_builder.writebytesbylength(user.TXProtocol.BufSigPic);//输入验证码后清空图片流
 			user.QQPacket00BaVerifyCode = new byte[] { };
 			user.QQPacket00BaSequence = 1;
 		}
 
 		body_builder.writebytesbylength(user.QQPacket00BaFixKey);
-
 		byte[] tlv_data = body_builder.getdata();
 		Crypter crypter = new Crypter();
 		byte[] result = crypter.encrypt(tlv_data, user.QQPacket00BaKey);
@@ -109,37 +100,26 @@ public class SendPackageFactory
 		user.QQPacket00BaSequence += 1;
 		return builder.getdata();
 	}
-
-
-
-
-
+	
 	public static byte[] get0825(QQUser user)
 	{
 		ByteBuilder builder = new ByteBuilder();
-
-
 		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
 		builder.writebytes(user.TXProtocol.CMainVer);
-
 		builder.writebytes(user.TXProtocol.CSubVer);
 		builder.writebytes(new byte[]{0x08,0x25});
 		builder.writeint(GetNextSeq());
 		builder.writelong(user.QQ);
-
 		builder.writebytes(user.TXProtocol.XxooA);
 		builder.writebytes(user.TXProtocol.DwClientType);
 		builder.writebytes(user.TXProtocol.DwPubNo);
 		builder.writebytes(user.TXProtocol.XxooD);
 		builder.writebytes(user.QQPacket0825Key);
-
-
 		ByteBuilder tlv_builder = new ByteBuilder() ;
 		byte[] tlv0018 = TLVFactory.tlv0018(user);
 		byte[] tlv0039 = TLVFactory.tlv0309(user);
 		byte[] tlv0036 = TLVFactory.tlv0036(2);
 		byte[] tlv0114 = TLVFactory.tlv0114(user);
-
 		tlv_builder.writebytes(tlv0018);
 		tlv_builder.writebytes(tlv0039);
 		tlv_builder.writebytes(tlv0036);
@@ -150,18 +130,15 @@ public class SendPackageFactory
 		builder.writebytes(result);
 		builder.writebytes(body_end);
 		return builder.getdata();
-
 	}
 
 	public static byte[] get0836(QQUser user, boolean need_verifycode)
 	{
 		ByteBuilder builder = new ByteBuilder();
-
 		byte[] tlv0110 = null;
 		byte[] tlv0032 = null;
 		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
 		builder.writebytes(user.TXProtocol.CMainVer);
-
 		builder.writebytes(user.TXProtocol.CSubVer);
 		builder.writebytes(new byte[]{0x08,0x36});
 		builder.writeint(GetNextSeq());
@@ -170,16 +147,13 @@ public class SendPackageFactory
 		builder.writebytes(user.TXProtocol.DwClientType);
 		builder.writebytes(user.TXProtocol.DwPubNo);
 		builder.writebytes(user.TXProtocol.XxooD);
-
 		builder.writebytes(user.TXProtocol.SubVer);
 		builder.writebytes(user.TXProtocol.EcdhVer);
 		builder.writebytesbylength(user.TXProtocol.BufDhPublicKey);
 		builder.writebytes(new byte[] { 0x00, 0x00, 0x00, 0x10 });
 		builder.writebytes(user.QQPacket0836Key1);
-
 		ByteBuilder  tlv_builder = new ByteBuilder();
 		byte[] tlv0112 = TLVFactory.tlv0112(user);
-
 		byte[] tlv030f = TLVFactory.tlv030f(user);
 		byte[] tlv0005 = TLVFactory.tlv0005(user);
 		byte[] tlv0006 = TLVFactory.tlv0006(user);
@@ -189,10 +163,6 @@ public class SendPackageFactory
 		byte[] tlv0103 = TLVFactory.tlv0103(user);
 		if (need_verifycode)
 		{
-			/*
-			 BodyWriter.Write(new TLV0110().Get_Tlv(User));
-			 BodyWriter.Write(new TLV0032().Get_Tlv(User));
-			 */
 			tlv0110 = TLVFactory.tlv0110(user);
 			tlv0032 = TLVFactory.tlv0032(user);
 		}
@@ -200,7 +170,6 @@ public class SendPackageFactory
 		byte[] tlv0508 = TLVFactory.tlv0508();
 		byte[] tlv0313= TLVFactory.tlv0313(user);
 		byte[] tlv0102= TLVFactory.tlv0102(user);
-
 		tlv_builder.writebytes(tlv0112);
 		tlv_builder.writebytes(tlv030f);
 		tlv_builder.writebytes(tlv0005);
@@ -212,30 +181,22 @@ public class SendPackageFactory
 		if (need_verifycode)
 		{
 			tlv_builder.writebytes(tlv0110);
-			//tlv_builder.writebytes(tlv0032);
 		}
 		tlv_builder.writebytes(tlv0312);
 		tlv_builder.writebytes(tlv0508);
 		tlv_builder.writebytes(tlv0313);
 		tlv_builder.writebytes(tlv0102);
-
-		//tlv_builder.writebytes(crckey);
-		//tlv_builder.writebytes(crccode);
 		byte[] tlv_data = tlv_builder.getdata();
 		Crypter crypter = new Crypter();
 		byte[] result = crypter.encrypt(tlv_data, user.TXProtocol.BufDhShareKey);
 		builder.writebytes(result);
-
 		builder.writebytes(body_end);
-
 		return builder.getdata();
 	}
 
 	public static byte[] get0828(QQUser user)
 	{
 		ByteBuilder builder = new ByteBuilder();
-
-
 		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
 		builder.writebytes(user.TXProtocol.CMainVer);
 		builder.writebytes(user.TXProtocol.CSubVer);
@@ -247,9 +208,7 @@ public class SendPackageFactory
 		builder.writebytes(user.TXProtocol.DwPubNo);
 		builder.writebytes(new byte[] { 0x00, 0x30, 0x00, 0x3a });
 		builder.writebytesbylength(user.TXProtocol.BufSigSession);
-
 		ByteBuilder tlv_builder = new ByteBuilder();
-
 		byte[] tlv0007 = TLVFactory.tlv0007(user);
 		byte[] tlv000c = TLVFactory.tlv000c(user);
 		byte[] tlv0015 = TLVFactory.tlv0015(user);
@@ -259,7 +218,6 @@ public class SendPackageFactory
 		byte[] tlv0105 = TLVFactory.tlv0105(user);
 		byte[] tlv010b = TLVFactory.tlv010b(user);
 		byte[] tlv002d = TLVFactory.tlv002d(user);
-
 		tlv_builder.writebytes(tlv0007);
 		tlv_builder.writebytes(tlv000c);
 		tlv_builder.writebytes(tlv0015);
@@ -269,7 +227,6 @@ public class SendPackageFactory
 		tlv_builder.writebytes(tlv0105);
 		tlv_builder.writebytes(tlv010b);
 		tlv_builder.writebytes(tlv002d);
-
 		byte[] tlv_data = tlv_builder.getdata();
 		Crypter crypter = new Crypter();
 		byte[] result = crypter.encrypt(tlv_data, user.TXProtocol.BufSessionKey);
@@ -277,16 +234,10 @@ public class SendPackageFactory
 		builder.writebytes(body_end);
 		return builder.getdata();
 	}
-
-
-
-
-
-
+	
 	public static byte[] get00ec(QQUser user, byte[] loginStatus)
 	{
 		ByteBuilder builder = new ByteBuilder();
-
 		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
 		builder.writebytes(user.TXProtocol.CMainVer);
 		builder.writebytes(user.TXProtocol.CSubVer);
@@ -340,9 +291,7 @@ public class SendPackageFactory
 		return builder.getdata();
 
 	}
-
-
-
+	
 	public static byte[] get0017(QQUser user, byte[] data_to_send, byte[] seq)
 	{
 		ByteBuilder builder = new ByteBuilder();
@@ -397,8 +346,7 @@ public class SendPackageFactory
 		return builder.getdata();
 
 	}
-
-
+	
 	public static byte[] get0319(QQUser user, long _recvQQ, byte[] MessageTime)
 	{
 		ByteBuilder builder = new ByteBuilder();
@@ -481,7 +429,6 @@ public class SendPackageFactory
 		else
 		{
 			byte[] message_to_send =ZLibUtils.compress(msg.getBytes());
-
 			body_builder.writebyte((byte)0x2A);
 			body_builder.writelong(group);
 			body_builder.writeint(message_to_send.length + 64);
@@ -501,8 +448,7 @@ public class SendPackageFactory
 		builder.writebytes(body_end);
 		return builder.getdata();
 	}
-
-
+	
 	public static byte[] sendpic(QQUser user, long gin,byte[] bitmap) throws IOException
 	{
 
@@ -685,9 +631,7 @@ public class SendPackageFactory
 		user.imgs.add(store);
 		return builder.getdata();
 	}
-
-
-
+	
 	protected static int GetNextSeq()
 	{
 		_seq++;
@@ -699,7 +643,6 @@ public class SendPackageFactory
 		{
 			_seq++;
 		}
-
 		return _seq;
 	}
 }
