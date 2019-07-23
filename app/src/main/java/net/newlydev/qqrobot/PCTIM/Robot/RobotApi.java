@@ -8,12 +8,23 @@ import net.newlydev.qqrobot.PCTIM.Utils.*;
 import net.newlydev.qqrobot.PCTIM.sdk.*;
 import org.json.*;
 import android.graphics.*;
+import android.content.Context;
+import net.newlydev.qqrobot.mApplication;
 
 public class RobotApi implements API
 {
+
 	private Udpsocket socket = null;
 	private QQUser user = null;
+	
+	@Override
+	public Context getContext()
+	{
+		// TODO: Implement this method
+		return mApplication.getContext();
+	}
 
+	
 	public RobotApi(Udpsocket _socket, QQUser _user)
 	{
 		this.user = _user;

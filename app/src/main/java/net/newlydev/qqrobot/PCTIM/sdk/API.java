@@ -1,5 +1,6 @@
 package net.newlydev.qqrobot.PCTIM.sdk;
 import android.graphics.*;
+import android.content.Context;
 
 public interface API
 {
@@ -10,4 +11,5 @@ public interface API
 	public void SendFriendXMLMessage(long uin,String xml);
 	public void GroupMemberShutUp(long gin,long uin,int time);
 	public void setGroupMemberCard(long gin,long uin,String card);
+	public Context getContext();
 }

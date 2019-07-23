@@ -45,6 +45,7 @@ public class LoginActivity extends Activity
 								ll.addView(iv);
 								ll.setOrientation(LinearLayout.VERTICAL);
 								final EditText et_verifyCode=new EditText(LoginActivity.this);
+								et_verifyCode.setHint("如显示不完全请直接点击确定按钮加载剩余图像");
 								ab.setView(ll);
 								ll.addView(et_verifyCode);
 								ab.setPositiveButton("确定", new DialogInterface.OnClickListener(){

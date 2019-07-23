@@ -57,11 +57,11 @@ public class MessageService
 						if (user.logintime > qqmessage.Send_Message_Time)
 						{
 
-							Util.log("[群消息(作废)] 来自群:" + qqmessage.Group_uin + " 的成员: " + qqmessage.SendName + " [消息] " + qqmessage.Message);
+							//Util.log("[群消息(作废)] 来自群:" + qqmessage.Group_uin + " 的成员: " + qqmessage.SendName + " [消息] " + qqmessage.Message);
 						}
 						else
 						{
-							Util.log("[群消息] 来自群:" + qqmessage.Group_uin + " 的成员: " + qqmessage.SendName + " [消息] " + qqmessage.Message);
+							Util.log("[群消息] 索引:"+Util.byte2HexString(qqmessage.MessageIndex)+"来自群:" + qqmessage.Group_uin + " 的成员: " + qqmessage.SendName + " [消息] " + qqmessage.Message);
 							this.robot.call(qqmessage);
 						}
 					}
@@ -91,7 +91,7 @@ public class MessageService
 					if (user.logintime > qqmessage.Send_Message_Time)
 					{
 
-						Util.log("[好友消息(作废)] 来自好友: " + qqmessage.Sender_Uin + " [消息] " + qqmessage.Message);
+						//Util.log("[好友消息(作废)] 来自好友: " + qqmessage.Sender_Uin + " [消息] " + qqmessage.Message);
 					}
 					else
 					{

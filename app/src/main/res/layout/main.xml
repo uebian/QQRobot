@@ -10,19 +10,29 @@
 		android:ems="10"
 		android:layout_height="wrap_content"
 		android:id="@+id/et_qq"
-		android:inputType="number"/>
+		android:inputType="number"
+		android:hint="qq号"/>
 
 	<EditText
 		android:layout_width="match_parent"
 		android:inputType="textPassword"
 		android:layout_height="wrap_content"
 		android:ems="10"
-		android:id="@+id/et_pwd"/>
+		android:id="@+id/et_pwd"
+		android:hint="密码"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="特别提醒：官方的QQRobot不会以任何方式记录你的密码。但是还是建议大家从QQRobot的源码自己编译应用以免被盗号"
+		android:textColor="#FF0F00"/>
 
 	<Button
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:id="@+id/btn_login"/>
+		android:id="@+id/btn_login"
+		android:text="登录"
+		android:layout_gravity="right"/>
 
 </LinearLayout>
 

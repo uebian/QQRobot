@@ -12,6 +12,66 @@ public class SendPackageFactory
 {
 	protected static int _seq = 0x3100; // (char)Util.Random.Next();
 	protected static byte[] body_end = {0x03};
+	public static byte[] get0002(QQUser user, long gin, String msg, boolean isxml)
+	{
+
+		ByteBuilder builder = new ByteBuilder();
+		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
+		builder.writebytes(user.TXProtocol.CMainVer);
+		builder.writebytes(user.TXProtocol.CSubVer);
+		builder.writebytes(new byte[]{0x00,0x02});
+		builder.writeint(GetNextSeq());
+		builder.writelong(user.QQ);
+		builder.writebytes(user.TXProtocol.XxooA);
+		builder.writebytes(user.TXProtocol.DwClientType);
+		builder.writebytes(user.TXProtocol.DwPubNo);
+		builder.writebytes(user.TXProtocol.XxooD);
+		ByteBuilder body_builder=new ByteBuilder();
+		//long dateTime = Util.GetTimeSeconds(new Date());
+		long group = Util.ConvertQQGroupId(gin);
+		if (!isxml)
+		{
+			byte[] message_to_send = Util.constructmessage(user, msg.getBytes());
+			body_builder.writebyte((byte)0x2A);
+			body_builder.writelong(group);
+			body_builder.writeint(message_to_send.length + 50); // 字符串长度 + 56，但是_data里面包含了和长度有关的额外六个byte
+			body_builder.writebytes(new byte[]
+									{
+										0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4D, 0x53,
+										0x47, 0x00,
+										0x00, 0x00, 0x00, 0x00
+									});
+			body_builder.writelong(new Date().getTime() / 1000);
+			body_builder.writebytes(Util.RandomKey(4));
+			body_builder.writebytes(Util.str_to_byte("0000000009008600"));
+			body_builder.writebytes(new byte[] { 0x00, 0x0C });
+			body_builder.writebytes(Util.str_to_byte("E5BEAEE8BDAFE99B85E9BB91"));
+			body_builder.writebytes(new byte[] { 0x00,0x00 });
+			body_builder.writebytes(message_to_send);
+
+		}
+		else
+		{
+			byte[] message_to_send =ZLibUtils.compress(msg.getBytes());
+			body_builder.writebyte((byte)0x2A);
+			body_builder.writelong(group);
+			body_builder.writeint(message_to_send.length + 64);
+			body_builder.writebytes(new byte[]
+									{
+										0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4D, 0x53,
+										0x47, 0x00,
+										0x00, 0x00, 0x00, 0x00
+									});
+			body_builder.writelong(new Date().getTime() / 1000);
+			body_builder.writebytes(Util.constructxmlmessage(user, message_to_send));
+
+		}
+		Crypter crypter = new Crypter();
+		byte[] result = crypter.encrypt(body_builder.getdata(), user.TXProtocol.SessionKey);
+		builder.writebytes(result);
+		builder.writebytes(body_end);
+		return builder.getdata();
+	}
 	public static byte[] get001d(QQUser user)
 	{
 		//Util.log("[发送包] 命令: 00 1d");
@@ -388,66 +448,7 @@ public class SendPackageFactory
 		return builder.getdata();
 	}
 
-	public static byte[] get0002(QQUser user, long gin, String msg, boolean isxml)
-	{
-
-		ByteBuilder builder = new ByteBuilder();
-		builder.writebytes(QQGlobal.QQHeaderBasicFamily);
-		builder.writebytes(user.TXProtocol.CMainVer);
-		builder.writebytes(user.TXProtocol.CSubVer);
-		builder.writebytes(new byte[]{0x00,0x02});
-		builder.writeint(GetNextSeq());
-		builder.writelong(user.QQ);
-		builder.writebytes(user.TXProtocol.XxooA);
-		builder.writebytes(user.TXProtocol.DwClientType);
-		builder.writebytes(user.TXProtocol.DwPubNo);
-		builder.writebytes(user.TXProtocol.XxooD);
-		ByteBuilder body_builder=new ByteBuilder();
-		//long dateTime = Util.GetTimeSeconds(new Date());
-		long group = Util.ConvertQQGroupId(gin);
-		if (!isxml)
-		{
-			byte[] message_to_send = Util.constructmessage(user, msg.getBytes());
-			body_builder.writebyte((byte)0x2A);
-			body_builder.writelong(group);
-			body_builder.writeint(message_to_send.length + 50); // 字符串长度 + 56，但是_data里面包含了和长度有关的额外六个byte
-			body_builder.writebytes(new byte[]
-									{
-										0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4D, 0x53,
-										0x47, 0x00,
-										0x00, 0x00, 0x00, 0x00
-									});
-			body_builder.writelong(new Date().getTime() / 1000);
-			body_builder.writebytes(Util.RandomKey(4));
-			body_builder.writebytes(Util.str_to_byte("0000000009008600"));
-			body_builder.writebytes(new byte[] { 0x00, 0x0C });
-			body_builder.writebytes(Util.str_to_byte("E5BEAEE8BDAFE99B85E9BB91"));
-			body_builder.writebytes(new byte[] { 0x00,0x00 });
-			body_builder.writebytes(message_to_send);
-
-		}
-		else
-		{
-			byte[] message_to_send =ZLibUtils.compress(msg.getBytes());
-			body_builder.writebyte((byte)0x2A);
-			body_builder.writelong(group);
-			body_builder.writeint(message_to_send.length + 64);
-			body_builder.writebytes(new byte[]
-									{
-										0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4D, 0x53,
-										0x47, 0x00,
-										0x00, 0x00, 0x00, 0x00
-									});
-			body_builder.writelong(new Date().getTime() / 1000);
-			body_builder.writebytes(Util.constructxmlmessage(user, message_to_send));
-
-		}
-		Crypter crypter = new Crypter();
-		byte[] result = crypter.encrypt(body_builder.getdata(), user.TXProtocol.SessionKey);
-		builder.writebytes(result);
-		builder.writebytes(body_end);
-		return builder.getdata();
-	}
+	
 	
 	public static byte[] sendpic(QQUser user, long gin,byte[] bitmap) throws IOException
 	{
