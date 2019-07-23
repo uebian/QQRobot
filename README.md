@@ -1,7 +1,7 @@
 安卓上的qq机器人，使用pctim协议
 本项目基于https://github.com/Saint-Theana/RingZux_QQ/
  
-插件开发帮助文档https://github.com/uebian/QQRobot/Plugin.md
+插件开发帮助文档https://github.com/uebian/QQRobot/blob/master/Plugin.md
 
 |项目|支持情况|
 |:-|:-|
