@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.0"
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "net.newlydev.qqrobot"
